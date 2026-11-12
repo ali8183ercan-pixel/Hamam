@@ -17,14 +17,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "21"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK licenses
+        run: |
+          if [ -n "$ANDROID_HOME" ] && [ -d "$ANDROID_HOME/cmdline-tools" ]; then
+            SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -name sdkmanager -type f | head -n 1)
+            if [ -n "$SDKMANAGER" ]; then
+              yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+            fi
+          fi
 
       - name: Prepare debug keystore and env file
         run: |
@@ -55,6 +61,7 @@ jobs:
           path: dist/RoachRush-debug.apk
 
       - name: Publish APK to GitHub Releases
+        continue-on-error: true
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest-apk
@@ -62,6 +69,5 @@ jobs:
           body: |
             Android telefonunuzdan tek dokunuşla kurmak için aşağıdaki **RoachRush-debug.apk** dosyasına dokunun.
           files: dist/RoachRush-debug.apk
-          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
