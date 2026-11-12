@@ -1,0 +1,6 @@
+{
+  "name": "Roach Rush",
+  "description": "Hamam böcekli, 3 şeritli, güçlendirmeli ve yüksek tempolu sonsuz metro koşu oyunu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

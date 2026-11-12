@@ -1,11 +1,13 @@
-<div align="center">
+# Roach Rush — Android APK Kurulum Rehberi
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+Bu proje, GitHub hesabınıza aktarıldığında otomatik olarak imzalı **Android APK** dosyası üretecek şekilde yapılandırılmıştır.
 
-  <h1>Built with AI Studio</h2>
+## Telefonunuzdan APK İndirme Adımları
 
-  <p>The fastest path from prompt to production with Gemini.</p>
-
-  <a href="https://aistudio.google.com/apps">Start building</a>
-
-</div>
+1. **GitHub'a Aktarın**: AI Studio üst menüsündeki **GitHub'a Aktar (Push to GitHub)** seçeneğini kullanarak projeyi kendi GitHub hesabınıza gönderin.
+2. **Derlemenin Bitmesini Bekleyin (~2-3 dakika)**: GitHub deponuzda **Actions** sekmesinden `Build Roach Rush APK` işleminin yeşil tik almasını bekleyin.
+3. **APK'yı Tek Dokunuşla İndirin**:
+   - Telefon tarayıcınızdan GitHub deponuzun ana sayfasını açın.
+   - **Releases** (Sürümler) bölümüne girin (mobil görünümde sağ/alt menüde yer alır, doğrudan URL: `https://github.com/<kullanici-adiniz>/<depo-adiniz>/releases`).
+   - **Roach Rush Son APK** başlığı altındaki **`RoachRush-debug.apk`** dosyasına dokunup indirin.
+4. **Telefona Kurun**: İnen `.apk` dosyasına dokunun; Android ilk kurulumda sorarsa tarayıcı için *"Bu kaynaktan uygulamalara izin ver"* seçeneğini onaylayıp kurulumu tamamlayın.

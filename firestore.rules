@@ -1,0 +1,134 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidCharacterId(id) {
+      return id is string && id in ['street_roach', 'neon_roach', 'gold_roach', 'punk_roach'];
+    }
+
+    function isValidBoardId(id) {
+      return id is string && id in ['leaf_board', 'bottlecap_board', 'cyber_board', 'flame_board'];
+    }
+
+    function isValidPlayerProfile(data) {
+      return data.userId is string &&
+        data.userId == request.auth.uid &&
+        data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 40 &&
+        data.highScore is int && data.highScore >= 0 && data.highScore <= 100000000 &&
+        data.totalCoins is int && data.totalCoins >= 0 && data.totalCoins <= 100000000 &&
+        data.totalRuns is int && data.totalRuns >= 0 && data.totalRuns <= 10000000 &&
+        data.bestDistanceMeters is int && data.bestDistanceMeters >= 0 && data.bestDistanceMeters <= 10000000 &&
+        data.scoreMultiplierLevel is int && data.scoreMultiplierLevel >= 1 && data.scoreMultiplierLevel <= 6 &&
+        data.magnetLevel is int && data.magnetLevel >= 1 && data.magnetLevel <= 5 &&
+        data.jetpackLevel is int && data.jetpackLevel >= 1 && data.jetpackLevel <= 5 &&
+        data.sneakersLevel is int && data.sneakersLevel >= 1 && data.sneakersLevel <= 5 &&
+        data.hoverboardCount is int && data.hoverboardCount >= 0 && data.hoverboardCount <= 9999 &&
+        isValidCharacterId(data.selectedCharacterId) &&
+        isValidBoardId(data.selectedBoardId) &&
+        data.unlockedCharacters is list && data.unlockedCharacters.size() >= 1 && data.unlockedCharacters.size() <= 10 &&
+        (data.unlockedCharacters.size() == 0 || data.unlockedCharacters[0] is string) &&
+        data.unlockedBoards is list && data.unlockedBoards.size() >= 1 && data.unlockedBoards.size() <= 10 &&
+        (data.unlockedBoards.size() == 0 || data.unlockedBoards[0] is string) &&
+        data.soundEnabled is bool &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidGameRun(data) {
+      return data.userId is string &&
+        data.userId == request.auth.uid &&
+        data.score is int && data.score >= 0 && data.score <= 100000000 &&
+        data.distanceMeters is int && data.distanceMeters >= 0 && data.distanceMeters <= 10000000 &&
+        data.coinsCollected is int && data.coinsCollected >= 0 && data.coinsCollected <= 1000000 &&
+        isValidCharacterId(data.characterId) &&
+        isValidBoardId(data.boardId) &&
+        data.createdAt is timestamp && data.createdAt <= request.time;
+    }
+
+    match /users/{userId} {
+      allow get: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
+      allow list: if isSignedIn() && request.auth.uid == userId;
+
+      allow create: if isSignedIn() &&
+        isValidId(userId) &&
+        request.auth.uid == userId &&
+        incoming().keys().hasAll([
+          'userId', 'displayName', 'highScore', 'totalCoins', 'totalRuns',
+          'bestDistanceMeters', 'scoreMultiplierLevel', 'magnetLevel', 'jetpackLevel',
+          'sneakersLevel', 'hoverboardCount', 'selectedCharacterId', 'selectedBoardId',
+          'unlockedCharacters', 'unlockedBoards', 'soundEnabled', 'createdAt', 'updatedAt'
+        ]) &&
+        incoming().keys().hasOnly([
+          'userId', 'displayName', 'highScore', 'totalCoins', 'totalRuns',
+          'bestDistanceMeters', 'scoreMultiplierLevel', 'magnetLevel', 'jetpackLevel',
+          'sneakersLevel', 'hoverboardCount', 'selectedCharacterId', 'selectedBoardId',
+          'unlockedCharacters', 'unlockedBoards', 'soundEnabled', 'createdAt', 'updatedAt'
+        ]) &&
+        isValidPlayerProfile(incoming());
+
+      allow update: if isSignedIn() &&
+        isValidId(userId) &&
+        request.auth.uid == userId &&
+        isValidPlayerProfile(incoming()) &&
+        incoming().userId == existing().userId &&
+        incoming().createdAt == existing().createdAt &&
+        (
+          // Action 1: Record finished run stats
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'highScore', 'totalCoins', 'totalRuns', 'bestDistanceMeters', 'hoverboardCount', 'updatedAt'
+          ]) ||
+          // Action 2: Shop purchase, upgrade, or equip
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'totalCoins', 'hoverboardCount', 'scoreMultiplierLevel', 'magnetLevel',
+            'jetpackLevel', 'sneakersLevel', 'selectedCharacterId', 'selectedBoardId',
+            'unlockedCharacters', 'unlockedBoards', 'updatedAt'
+          ]) ||
+          // Action 3: Settings / profile preference update
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'selectedCharacterId', 'selectedBoardId', 'soundEnabled', 'displayName', 'updatedAt'
+          ])
+        );
+
+      allow delete: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
+
+      match /runs/{runId} {
+        allow get: if isSignedIn() && isValidId(userId) && isValidId(runId) && request.auth.uid == userId;
+        allow list: if isSignedIn() && request.auth.uid == userId;
+
+        allow create: if isSignedIn() &&
+          isValidId(userId) &&
+          isValidId(runId) &&
+          request.auth.uid == userId &&
+          incoming().keys().hasAll([
+            'userId', 'score', 'distanceMeters', 'coinsCollected', 'characterId', 'boardId', 'createdAt'
+          ]) &&
+          incoming().keys().hasOnly([
+            'userId', 'score', 'distanceMeters', 'coinsCollected', 'characterId', 'boardId', 'createdAt'
+          ]) &&
+          isValidGameRun(incoming());
+
+        allow update, delete: if false;
+      }
+    }
+  }
+}

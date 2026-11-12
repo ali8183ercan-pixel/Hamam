@@ -1,0 +1,160 @@
+{
+  "entities": {
+    "PlayerProfile": {
+      "title": "PlayerProfile",
+      "description": "Stores a player's Roach Rush progress, high score, coins, upgrades, unlocked cockroach runners, and hoverboards.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the player."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Player display name."
+        },
+        "highScore": {
+          "type": "integer",
+          "description": "Highest run score achieved."
+        },
+        "totalCoins": {
+          "type": "integer",
+          "description": "Current spendable coin balance."
+        },
+        "totalRuns": {
+          "type": "integer",
+          "description": "Total completed runs."
+        },
+        "bestDistanceMeters": {
+          "type": "integer",
+          "description": "Longest distance run in meters."
+        },
+        "scoreMultiplierLevel": {
+          "type": "integer",
+          "description": "Upgraded permanent score multiplier (1 to 6)."
+        },
+        "magnetLevel": {
+          "type": "integer",
+          "description": "Coin magnet power-up level (1 to 5)."
+        },
+        "jetpackLevel": {
+          "type": "integer",
+          "description": "Roach wings jetpack power-up level (1 to 5)."
+        },
+        "sneakersLevel": {
+          "type": "integer",
+          "description": "Super sneakers power-up level (1 to 5)."
+        },
+        "hoverboardCount": {
+          "type": "integer",
+          "description": "Available consumable hoverboard charges."
+        },
+        "selectedCharacterId": {
+          "type": "string",
+          "description": "Currently equipped cockroach runner ID."
+        },
+        "selectedBoardId": {
+          "type": "string",
+          "description": "Currently equipped hoverboard skin ID."
+        },
+        "unlockedCharacters": {
+          "type": "array",
+          "description": "List of unlocked cockroach character IDs."
+        },
+        "unlockedBoards": {
+          "type": "array",
+          "description": "List of unlocked hoverboard IDs."
+        },
+        "soundEnabled": {
+          "type": "boolean",
+          "description": "Whether synthesized arcade sound effects are enabled."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of profile creation (FieldValue.serverTimestamp())."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last profile update (FieldValue.serverTimestamp())."
+        }
+      },
+      "required": [
+        "userId",
+        "displayName",
+        "highScore",
+        "totalCoins",
+        "totalRuns",
+        "bestDistanceMeters",
+        "scoreMultiplierLevel",
+        "magnetLevel",
+        "jetpackLevel",
+        "sneakersLevel",
+        "hoverboardCount",
+        "selectedCharacterId",
+        "selectedBoardId",
+        "unlockedCharacters",
+        "unlockedBoards",
+        "soundEnabled",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "GameRun": {
+      "title": "GameRun",
+      "description": "Immutable record of an individual Roach Rush run.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the player."
+        },
+        "score": {
+          "type": "integer",
+          "description": "Final run score."
+        },
+        "distanceMeters": {
+          "type": "integer",
+          "description": "Distance survived in meters."
+        },
+        "coinsCollected": {
+          "type": "integer",
+          "description": "Coins collected during this run."
+        },
+        "characterId": {
+          "type": "string",
+          "description": "Cockroach character used for this run."
+        },
+        "boardId": {
+          "type": "string",
+          "description": "Hoverboard equipped for this run."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when run finished (FieldValue.serverTimestamp())."
+        }
+      },
+      "required": [
+        "userId",
+        "score",
+        "distanceMeters",
+        "coinsCollected",
+        "characterId",
+        "boardId",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/PlayerProfile" },
+      "description": "Player profile, wallet, upgrades, and unlocked cosmetics."
+    },
+    "/users/{userId}/runs/{runId}": {
+      "schema": { "$ref": "#/entities/GameRun" },
+      "description": "Player's completed run history."
+    }
+  }
+}
