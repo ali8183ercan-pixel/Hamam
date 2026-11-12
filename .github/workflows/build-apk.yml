@@ -23,19 +23,28 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Accept Android SDK licenses
+      - name: Ensure Android SDK licenses are accepted
+        shell: bash
         run: |
-          if [ -n "$ANDROID_HOME" ] && [ -d "$ANDROID_HOME/cmdline-tools" ]; then
-            SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -name sdkmanager -type f | head -n 1)
+          SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          mkdir -p "$SDK_ROOT/licenses"
+          printf "\n24333f8a63b6825ea9c5514f83c2829b004d1fee\nd56f5187479451eabf01fb78af6dfcb131a6481e\n" >> "$SDK_ROOT/licenses/android-sdk-license"
+          printf "\n84831b9409646a918e30573bab4c9c91346d8abd\n" >> "$SDK_ROOT/licenses/android-sdk-preview-license"
+          printf "\n33b6a2b64607f11b759f320ef9dff4ae5c47d97a\n" >> "$SDK_ROOT/licenses/google-gdk-license"
+          if [ -d "$SDK_ROOT/cmdline-tools" ]; then
+            SDKMANAGER=$(find "$SDK_ROOT/cmdline-tools" -name sdkmanager -type f | head -n 1 || true)
             if [ -n "$SDKMANAGER" ]; then
-              yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+              set +o pipefail
+              yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses > /dev/null 2>&1 || true
             fi
           fi
 
       - name: Prepare debug keystore and env file
         run: |
           if [ ! -f debug.keystore ] && [ -f debug.keystore.base64 ]; then
-            base64 -d debug.keystore.base64 > debug.keystore
+            tr -d '[:space:]' < debug.keystore.base64 | base64 -d > debug.keystore
           fi
           if [ ! -f .env ] && [ -f .env.example ]; then
             cp .env.example .env
@@ -47,12 +56,17 @@ jobs:
           gradle-version: "9.3.1"
 
       - name: Build Debug APK
-        run: gradle :app:assembleDebug --no-daemon
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
 
-      - name: Stage APK for Release
+      - name: Stage APK for Release and Download Site
         run: |
-          mkdir -p dist
+          mkdir -p dist site-dist
           cp app/build/outputs/apk/debug/app-debug.apk dist/RoachRush-debug.apk
+          cp app/build/outputs/apk/debug/app-debug.apk site-dist/RoachRush-debug.apk
+          if [ -f docs/index.html ]; then
+            cp docs/index.html site-dist/index.html
+          fi
+          touch site-dist/.nojekyll
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -71,3 +85,16 @@ jobs:
           files: dist/RoachRush-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish APK Download Site to gh-pages branch
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd site-dist
+          git init -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Deploy Roach Rush APK download site"
+          git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" gh-pages

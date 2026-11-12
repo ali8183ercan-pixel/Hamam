@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#120E26" />
+  <title>Roach Rush — Android APK İndir</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #120E26;
+      --bg-deep: #0B0819;
+      --surface: #1B1543;
+      --surface-2: #241D57;
+      --border: rgba(180, 172, 214, 0.16);
+      --primary: #FF6B2B;
+      --primary-hover: #FF824B;
+      --accent: #00E5A3;
+      --gold: #FFD166;
+      --text: #F7F5FF;
+      --muted: #B4ACD6;
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Rubik', system-ui, -apple-system, sans-serif;
+      background:
+        radial-gradient(900px 460px at 50% -80px, rgba(255, 107, 43, 0.22), transparent 65%),
+        radial-gradient(700px 400px at 90% 25%, rgba(0, 229, 163, 0.12), transparent 65%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      padding: 20px 16px 48px;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .track-strip {
+      height: 6px;
+      border-radius: 999px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--primary) 0 24px,
+        transparent 24px 36px,
+        var(--accent) 36px 60px,
+        transparent 60px 72px
+      );
+      opacity: 0.85;
+      margin-bottom: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Baloo 2', cursive;
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: 0.01em;
+    }
+
+    .brand-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), #D9480F);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 20px rgba(255, 107, 43, 0.35);
+      flex-shrink: 0;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(0, 229, 163, 0.12);
+      border: 1px solid rgba(0, 229, 163, 0.35);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    .hero-card {
+      background: linear-gradient(160deg, rgba(36, 29, 87, 0.92), rgba(27, 21, 67, 0.96));
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 26px 22px;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255, 209, 102, 0.12), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-kicker {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(2rem, 6vw, 2.75rem);
+      line-height: 1.08;
+      margin-bottom: 10px;
+    }
+
+    .hero-desc {
+      color: var(--muted);
+      font-size: 0.98rem;
+      margin-bottom: 20px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .meta-box {
+      background: rgba(11, 8, 25, 0.48);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .meta-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: block;
+    }
+
+    .meta-value {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+
+    .cta-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 56px;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--primary) 0%, #E85216 100%);
+      color: #FFFFFF;
+      font-family: 'Baloo 2', cursive;
+      font-size: 1.2rem;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 12px 28px rgba(255, 107, 43, 0.42);
+      transition: transform 0.14s ease, filter 0.14s ease;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.06);
+    }
+
+    .secondary-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.11);
+    }
+
+    .notice-banner {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(0, 229, 163, 0.13);
+      border: 1px solid rgba(0, 229, 163, 0.35);
+      color: #D7FFF2;
+      font-size: 0.88rem;
+    }
+
+    .notice-banner.visible {
+      display: block;
+    }
+
+    .notice-banner.warn {
+      background: rgba(255, 209, 102, 0.12);
+      border-color: rgba(255, 209, 102, 0.35);
+      color: #FFF2C9;
+    }
+
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Baloo 2', cursive;
+      font-size: 1.28rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(11, 8, 25, 0.44);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .step-item.done {
+      border-color: rgba(0, 229, 163, 0.55);
+      background: rgba(0, 229, 163, 0.08);
+    }
+
+    .step-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      background: var(--surface-2);
+      color: var(--gold);
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .step-item.done .step-num {
+      background: var(--accent);
+      color: #08291E;
+    }
+
+    .step-text strong {
+      display: block;
+      font-size: 0.94rem;
+      margin-bottom: 2px;
+    }
+
+    .step-text span {
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .feature-item {
+      padding: 13px;
+      border-radius: 14px;
+      background: rgba(11, 8, 25, 0.44);
+      border: 1px solid var(--border);
+    }
+
+    .feature-item strong {
+      display: block;
+      font-size: 0.92rem;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .feature-item p {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 20px;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    @media (max-width: 480px) {
+      .meta-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .meta-box:last-child {
+        grid-column: span 2;
+      }
+      .feature-grid,
+      .secondary-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="track-strip" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <ellipse cx="12" cy="13" rx="5.5" ry="7.5" fill="#FFF7EE"/>
+            <path d="M9 6.5C7 4 5 3.5 3.5 3.5M15 6.5C17 4 19 3.5 20.5 3.5" stroke="#FFF7EE" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M6.5 10L3 8.5M6 13.5L2.5 13.5M6.8 17L3.5 19M17.5 10L21 8.5M18 13.5L21.5 13.5M17.2 17L20.5 19" stroke="#FFF7EE" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span>ROACH RUSH</span>
+      </div>
+      <div class="status-pill" id="releasePill">
+        <span class="status-dot"></span>
+        <span id="releaseBadgeText">Sürüm Kontrol Ediliyor...</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-card">
+        <span class="hero-kicker">Android Endless Runner</span>
+        <h1>Metro Raylarında Kaçış Başlıyor!</h1>
+        <p class="hero-desc">
+          3 şeritli metro tünellerinde trenlerden kaç, kırıntıları topla, Turbo ve Kalkan güçlendiricileriyle yeni hamamböceği karakterlerinin kilidini aç.
+        </p>
+
+        <div class="meta-grid">
+          <div class="meta-box">
+            <span class="meta-label">Dosya</span>
+            <span class="meta-value" id="apkName">RoachRush-debug.apk</span>
+          </div>
+          <div class="meta-box">
+            <span class="meta-label">Boyut</span>
+            <span class="meta-value" id="apkSize">Hazırlanıyor</span>
+          </div>
+          <div class="meta-box">
+            <span class="meta-label">Güncelleme</span>
+            <span class="meta-value" id="apkDate">Son Derleme</span>
+          </div>
+        </div>
+
+        <div class="cta-stack">
+          <a class="btn-primary" id="downloadBtn" href="https://github.com/ali8183ercan-pixel/Hamam/releases/latest/download/RoachRush-debug.apk" download="RoachRush-debug.apk">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 19h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>APK İNDİR (Android)</span>
+          </a>
+
+          <div class="secondary-row">
+            <a class="btn-secondary" id="releasesBtn" href="https://github.com/ali8183ercan-pixel/Hamam/releases" target="_blank" rel="noopener">
+              GitHub Releases
+            </a>
+            <button class="btn-secondary" type="button" id="copyBtn">
+              İndirme Linkini Kopyala
+            </button>
+          </div>
+        </div>
+
+        <div class="notice-banner" id="downloadNotice"></div>
+      </section>
+
+      <section class="section-card">
+        <h2 class="section-title">Telefonuna 3 Adımda Kur</h2>
+        <div class="steps" id="stepsList">
+          <div class="step-item" role="button" tabindex="0">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <strong>APK İndir butonuna dokun</strong>
+              <span>Tarayıcı altta veya bildirim çubuğunda indirme onayını sorduğunda "Yine de indir" seçeneğine dokun.</span>
+            </div>
+          </div>
+          <div class="step-item" role="button" tabindex="0">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <strong>İnen RoachRush-debug.apk dosyasını aç</strong>
+              <span>Android ilk kurulumda sorarsa "Ayarlar &gt; Bu kaynaktan izin ver" anahtarını açıp geri dön.</span>
+            </div>
+          </div>
+          <div class="step-item" role="button" tabindex="0">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <strong>Yükle ve metroya dal!</strong>
+              <span>Google hesabınla giriş yaparak yüksek skorunu ve açtığın hamamböceklerini bulutta sakla.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <h2 class="section-title">Oyun Özellikleri</h2>
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>60 FPS Akıcı Koşu</strong>
+            <p>Sağa/sola şerit değiştir, bariyerlerin üzerinden zıpla ve tabelaların altından kay.</p>
+          </div>
+          <div class="feature-item">
+            <strong>Güçlendiriciler</strong>
+            <p>Kırıntı Mıknatısı, Çarpışma Kalkanı ve 2x Hız Turbo ile rekorunu katla.</p>
+          </div>
+          <div class="feature-item">
+            <strong>Hamamböceği Kadrosu</strong>
+            <p>Klasik, Altın Zırh, Neon Siber ve Kral hamamböceği görünümlerini dükkandan aç.</p>
+          </div>
+          <div class="feature-item">
+            <strong>Bulut Skor &amp; Geçmiş</strong>
+            <p>Tüm koşuların ve kırıntı bakiyen Firebase ile güvenle senkronize edilir.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Kaynak depo:
+      <a href="https://github.com/ali8183ercan-pixel/Hamam" target="_blank" rel="noopener">ali8183ercan-pixel/Hamam</a>
+      &middot;
+      <a href="https://github.com/ali8183ercan-pixel/Hamam/actions" target="_blank" rel="noopener">Derleme Durumu (Actions)</a>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const REPO = "ali8183ercan-pixel/Hamam";
+      const FALLBACK_RELEASE_APK = `https://github.com/${REPO}/releases/latest/download/RoachRush-debug.apk`;
+
+      const downloadBtn = document.getElementById("downloadBtn");
+      const releaseBadgeText = document.getElementById("releaseBadgeText");
+      const apkSizeEl = document.getElementById("apkSize");
+      const apkDateEl = document.getElementById("apkDate");
+      const noticeEl = document.getElementById("downloadNotice");
+      const copyBtn = document.getElementById("copyBtn");
+
+      let activeDownloadUrl = FALLBACK_RELEASE_APK;
+
+      function formatBytes(bytes) {
+        if (!bytes || isNaN(bytes)) return "APK Hazır";
+        return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+      }
+
+      function showNotice(text, isWarn) {
+        noticeEl.textContent = text;
+        noticeEl.className = "notice-banner visible" + (isWarn ? " warn" : "");
+      }
+
+      async function detectBestApkSource() {
+        try {
+          const localResp = await fetch("./RoachRush-debug.apk", { method: "HEAD" });
+          if (localResp.ok) {
+            const len = Number(localResp.headers.get("content-length"));
+            activeDownloadUrl = "./RoachRush-debug.apk";
+            downloadBtn.href = activeDownloadUrl;
+            releaseBadgeText.textContent = "Doğrudan İndirme Hazır";
+            if (len > 0) apkSizeEl.textContent = formatBytes(len);
+          }
+        } catch (_) {}
+
+        try {
+          const apiResp = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
+          if (apiResp.ok) {
+            const data = await apiResp.json();
+            const apkAsset = (data.assets || []).find((a) => a.name && a.name.endsWith(".apk"));
+            if (apkAsset) {
+              if (activeDownloadUrl === FALLBACK_RELEASE_APK) {
+                activeDownloadUrl = apkAsset.browser_download_url;
+                downloadBtn.href = activeDownloadUrl;
+              }
+              releaseBadgeText.textContent = data.tag_name ? `Sürüm: ${data.tag_name}` : "Son Sürüm Hazır";
+              apkSizeEl.textContent = formatBytes(apkAsset.size);
+              if (apkAsset.updated_at) {
+                apkDateEl.textContent = new Date(apkAsset.updated_at).toLocaleDateString("tr-TR");
+              }
+              return;
+            }
+          }
+          if (activeDownloadUrl === FALLBACK_RELEASE_APK) {
+            downloadBtn.href = FALLBACK_RELEASE_APK;
+            releaseBadgeText.textContent = "Actions / Release Bekleniyor";
+            apkSizeEl.textContent = "Otomatik";
+            showNotice(
+              "Henüz GitHub Releases altında yayınlanmış APK bulunamadıysa Actions sekmesindeki RoachRush-debug-apk dosyasını kontrol edebilirsin.",
+              true
+            );
+          }
+        } catch (_) {
+          if (activeDownloadUrl === FALLBACK_RELEASE_APK) {
+            downloadBtn.href = FALLBACK_RELEASE_APK;
+            releaseBadgeText.textContent = "GitHub Sürüm Linki";
+          }
+        }
+      }
+
+      downloadBtn.addEventListener("click", function () {
+        showNotice("APK indirmesi başlatıldı! İndirme tamamlanınca bildirim çubuğundan dosyaya dokunup kurabilirsin.", false);
+      });
+
+      copyBtn.addEventListener("click", async function () {
+        const urlToCopy = new URL(downloadBtn.getAttribute("href"), window.location.href).href;
+        try {
+          await navigator.clipboard.writeText(urlToCopy);
+          const old = copyBtn.textContent;
+          copyBtn.textContent = "Kopyalandı!";
+          setTimeout(() => { copyBtn.textContent = old; }, 2000);
+        } catch (_) {
+          showNotice("İndirme bağlantısı: " + urlToCopy, false);
+        }
+      });
+
+      document.querySelectorAll(".step-item").forEach((item) => {
+        const toggle = () => item.classList.toggle("done");
+        item.addEventListener("click", toggle);
+        item.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggle();
+          }
+        });
+      });
+
+      detectBestApkSource();
+    })();
+  </script>
+</body>
+</html>
